@@ -36,8 +36,11 @@ int main(int argc, char** argv) {
     step /= mpf_N;
 
     long long chunk = N / size;
-    long long start = rank * chunk;
-    long long end = (rank == size - 1) ? N : start + chunk;
+    long long remainder = N % size;
+
+    long long my_chunk = chunk + (rank < remainder ? 1 : 0);
+    long long start = rank * chunk + (rank < remainder ? rank : remainder);
+    long long end = start + my_chunk;
 
     MPI_Barrier(MPI_COMM_WORLD);
     // START TIMER
